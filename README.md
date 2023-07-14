@@ -2,7 +2,7 @@
 
 <div align="center">
 
-  <img src="./public/ys-logo.png" alt="logo" width="140"  height="auto" />
+  <img src="./ys-logo-nobg.png" alt="logo" width="140"  height="auto" />
   <br/>
 
   <h3><b>Youtube sharing app</b></h3>
