@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -18,19 +19,20 @@ const userSchema = mongoose.Schema({
   timestamps: true,
 });
 
-user.methods.matchPasswords = async (password) => {
-  return bcrypt.compareSync(password, this.password);
+userSchema.methods.matchPasswords = async function(password) {
+  return await bcrypt.compare(password, this.password);
 }
 
-userSchema.pre('save', async (next) => {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
   }
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+
   return next();
-});
+})
 
 const User = mongoose.model('User', userSchema);
 
