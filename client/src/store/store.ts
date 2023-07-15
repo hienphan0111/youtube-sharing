@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
+import videoSharedReducer from './videoSharedSlice';
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    videoShared: videoSharedReducer,
   }
 });
 

@@ -43,10 +43,18 @@ export const deleteVideoShared = createAsyncThunk<any, any, { state: RootState}>
     return res.data;
 });
 
+export interface VideoShared {
+  _id: string;
+  title: string;
+  description: string;
+  url: string;
+  user: string;
+}
+
 export interface VideoSharedState {
   isLoading: boolean;
   error: any;
-  videoShared: object[];
+  videoShared: VideoShared[];
 }
 
 const inititalSate: VideoSharedState = {
@@ -100,4 +108,5 @@ const videoSharedSlice = createSlice({
   }
 });
 
+export const videoSharedSelector = (state: RootState) => state.videoShared;
 export default videoSharedSlice.reducer;

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { RootState } from './store';
 
 const URL = 'http://localhost:5000/api/users';
 
@@ -26,14 +27,14 @@ export interface UserState {
   userVideoShared: object[];
 }
 
-type userInfo = {
+export interface userInfo {
   _id: string;
   name: string;
   email: string;
   token: string;
 }
 
-const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')!) : null;
+const userInfoFromStorage: userInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')!) : null;
 
 const inititalSate: UserState = {
   isLoading: false,
@@ -75,4 +76,5 @@ const userSlice = createSlice({
   }
 });
 
+export const userSelector = (state: RootState) => state.user;
 export default userSlice.reducer;
