@@ -17,16 +17,18 @@ const Navbar = () => {
       <div className='w-full flex'>
         <Link to='/' className='text-red-600 text-xl font-bold'>Youtube sharing</Link>
       </div>
-      <nav className='w-full'>
+      <nav className='w-full flex justify-end items-center gap-2'>
         {
           selectUser.userInfo ? (
             <div className='flex relative'>
               <FaUser />
-              <p>{selectUser.userInfo?.name}</p>
-              <IoIosArrowDown onClick={(pre: boolean) => setToggle(!pre)} />
+              <button type="button" onClick={() => setToggle(!toggle)} className='flex gap-2 items-center'>
+                <p>{selectUser.userInfo?.name}</p>
+                <IoIosArrowDown />
+              </button>
               {
-                toggle && (
-                  <div className='absolute'>
+                toggle ? (
+                  <div className='absolute top-10 right-0'>
                     <ul>
                       <li>
                         <Link to='/profile'>Profile</Link>
@@ -36,7 +38,7 @@ const Navbar = () => {
                       </li>
                     </ul>
                   </div>
-                )
+                ) : null
               }
               <BsBellFill />
             </div>

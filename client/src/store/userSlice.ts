@@ -6,7 +6,7 @@ const URL = 'http://localhost:5000/api/users';
 
 export const login = createAsyncThunk(
   'users/login',
-  async ( data ) => {
+  async ( data: { email: string, password: string } ) => {
     const res = await axios.post(`${URL}/login`, data)
     return res.data;
   }
@@ -14,7 +14,7 @@ export const login = createAsyncThunk(
 
 export const register = createAsyncThunk(
   'users/register',
-  async ( data ) => {
+  async ( data: { name: string, email: string, password: string} ) => {
     const res = await axios.post(`${URL}/register`, data)
     return res.data;
   }
@@ -46,10 +46,15 @@ const inititalSate: UserState = {
 const userSlice = createSlice({
   name: 'user',
   initialState: inititalSate,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      localStorage.removeItem('userInfo');
+      state.userInfo = null;
+    }
+  },
   extraReducers(builder) {
     builder
-      .addCase(login.pending, (state, action) => {
+      .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(login.rejected, (state, action) => {
@@ -59,9 +64,10 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.userInfo = action.payload;
+        localStorage.setItem('userInfo', JSON.stringify(action.payload));
         state.error = null;
       })
-      .addCase(register.pending, (state, action) => {
+      .addCase(register.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(register.rejected, (state, action) => {
@@ -71,6 +77,7 @@ const userSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         state.userInfo = action.payload;
+        localStorage.setItem('userInfo', JSON.stringify(action.payload));
         state.error = null;
       })
   }
