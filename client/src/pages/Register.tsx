@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Field, Formik, FormikProps, FieldProps, withFormik  } from "formik";
+import { Form, Field, Formik, FormikProps, withFormik  } from "formik";
 import * as Yup from "yup";
-import { useAppDispatch } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { register } from '../store/userSlice';
 import { AppDispatch } from '../store/store';
+import { userSelector } from '../store/userSlice';
 
 interface FormValues {
   name: string;
@@ -40,21 +41,21 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
         {touched.password && errors.password && <div className={styles.error}>{errors.password}</div>}
       </div>
       <button type="submit" disabled={isSubmitting} className='bg-green-700 text-gray-300 p-1 rounded-md hover:bg-green-600 mt-3'>
-        Submit
+        Sign up
       </button>
       <div>{message}</div>
     </Form>
   )
 }
 
-interface LoginFormProps {
+interface RegisterFormProps {
   initialEmail?: string;
   message?: string;
   dispatch: AppDispatch;
   navigate: any;
 }
 
-const LoginForm = withFormik<LoginFormProps, FormValues> ({
+const RegisterForm = withFormik<RegisterFormProps, FormValues> ({
   mapPropsToValues: props => {
     return {
       name: "",
@@ -82,10 +83,11 @@ const LoginForm = withFormik<LoginFormProps, FormValues> ({
   },
 })(InnerForm);
 
-const Register = (props: OtherProps & FormikProps<FormValues> ) => {
+const Register = () => {
 
+  const { userInfo } = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate<string>();
+  const navigate = useNavigate();
   const [message, setMessage] = useState<string>("");
 
   return (
@@ -94,7 +96,10 @@ const Register = (props: OtherProps & FormikProps<FormValues> ) => {
         <h1 className='font-bold text-xl mb-5'>
           Register
         </h1>
-        <LoginForm message={message} dispatch={dispatch} navigate={navigate} />
+        { userInfo ? 
+          (<div>You are already login</div>)
+          : <RegisterForm message={message} dispatch={dispatch} navigate={navigate} />
+        }
       </div>
     </div>
   )

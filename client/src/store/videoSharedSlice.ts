@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from './store';
+import io from 'socket.io-client';
 
-const URL = 'http://localhost:5000/api/video-shared';
+//const socket = io.connect('http://localhost:5000');
 
-export const getVideoShared = createAsyncThunk(
+const URL = 'http://localhost:5000/api/videos-shared';
+
+export const fetchVideoShared = createAsyncThunk(
   'videoShared/getVideoShared',
   async ( ) => {
     const res = await axios.get(URL);
@@ -14,16 +17,16 @@ export const getVideoShared = createAsyncThunk(
 export const addVideoShared = createAsyncThunk<any, any, { state: RootState}>(
   'videoShared/addVideoShared',
   async ( data: { title: string, description: string, url: string }, { getState } ) => {
-    const userInfo = getState().user.userInfo;
+    const { userInfo } = getState().user;
 
-    const res = await axios.post(`${URL}/create`,
-    {
+    const config = {
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo?.token}`
-      }
-    },
-    data);
+        Authorization: `Bearer ${userInfo?.token}`,
+        'Content-Type': 'application/json'
+      },
+    }
+    const res = await axios.post(`${URL}/create`, data, config);
+    //socket.emit('new-video-shared', res.data);
     return res.data;
 });
 
@@ -69,19 +72,19 @@ const videoSharedSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(getVideoShared.pending, (state: VideoSharedState, action: PayloadAction) => {
+      .addCase(fetchVideoShared.pending, (state: VideoSharedState) => {
         state.isLoading = true;
       })
-      .addCase(getVideoShared.rejected, (state: VideoSharedState, action) => {
+      .addCase(fetchVideoShared.rejected, (state: VideoSharedState, action) => {
         state.isLoading = false;
         state.error = action.error;
       })
-      .addCase(getVideoShared.fulfilled, (state, action) => {
+      .addCase(fetchVideoShared.fulfilled, (state, action) => {
         state.isLoading = false;
         state.videoShared = action.payload;
         state.error = null;
       })
-      .addCase(addVideoShared.pending, (state, action) => {
+      .addCase(addVideoShared.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(addVideoShared.rejected, (state, action) => {
@@ -90,10 +93,10 @@ const videoSharedSlice = createSlice({
       })
       .addCase(addVideoShared.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.videoShared = action.payload;
+        state.videoShared.push(action.payload);
         state.error = null;
       })
-      .addCase(deleteVideoShared.pending, (state, action) => {
+      .addCase(deleteVideoShared.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(deleteVideoShared.rejected, (state, action) => {

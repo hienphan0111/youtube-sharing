@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Field, Formik, FormikProps, withFormik  } from "formik";
 import * as Yup from "yup";
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { login } from '../store/userSlice';
+import { useAppDispatch } from '../store/hooks';
 import { AppDispatch } from '../store/store';
-import { userSelector } from '../store/userSlice';
+import { addVideoShared } from '../store/videoSharedSlice';
 
 interface FormValues {
-  email: string;
-  password: string;
+  title: string;
+  description: string;
+  url: string;
 }
 
 interface OtherProps {
@@ -23,20 +23,25 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
   const styles = {
     input: 'bg-slate-200 p-1 w-full rounded-sm',
     error: 'text-red-500 text-sm italic text-left mt-2',
+    textArea: 'bg-slate-200 p-1 w-full h-20 rounded-sm',
   }
 
   return (  
     <Form className='flex gap-5 flex-col'>
       <div>
-        <Field type="email" name="email" placeholder="Email" className={styles.input} />
-        {touched.email && errors.email && <div className={styles.error}>{errors.email}</div>}
+        <Field type="text" name="title" placeholder="Title" className={styles.input} />
+        {touched.title && errors.title && <div className={styles.error}>{errors.title}</div>}
       </div>
       <div>
-        <Field type="password" name="password" className={styles.input} placeholder="Password" />
-        {touched.password && errors.password && <div className={styles.error}>{errors.password}</div>}
+        <Field type="text" name="url" className={styles.input} placeholder="Video Url" />
+        {touched.url && errors.url && <div className={styles.error}>{errors.url}</div>}
+      </div>
+      <div>
+        <Field type="textarea" name="description" className={styles.textArea} placeholder="Description" />
+        {touched.description && errors.description && <div className={styles.error}>{errors.description}</div>}
       </div>
       <button type="submit" disabled={isSubmitting} className='bg-green-700 text-gray-300 p-1 rounded-md hover:bg-green-600 mt-3'>
-        Login
+        Add video
       </button>
       <div>{message}</div>
     </Form>
@@ -44,7 +49,6 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
 }
 
 interface LoginFormProps {
-  initialEmail?: string;
   message?: string;
   dispatch: AppDispatch;
   navigate: any;
@@ -53,31 +57,30 @@ interface LoginFormProps {
 const LoginForm = withFormik<LoginFormProps, FormValues> ({
   mapPropsToValues: props => {
     return {
-      email: props.initialEmail || "",
-      password: ""
+      title: "",
+      description: "",
+      url: "",
     };
   },
   validationSchema: Yup.object().shape({
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required!"),
-    password: Yup.string()
-      .min(6, "Password has to be longer than 6 characters!")
-      .required("Password is required!")  
+    title: Yup.string()
+      .min(3, "Title is too short!")
+      .required("Title is required!"),
+    url: Yup.string()
+      .url('Invalid URL')
+      .required("Url is required!"),
+    description: Yup.string(),
   }),
 
   handleSubmit: (values, { props, setSubmitting }) => {
-    props.dispatch(login(values));
-    setTimeout(() => {
-      props.navigate('/');
-      setSubmitting(false);
-    }, 500);
+    props.dispatch(addVideoShared(values));
+    setSubmitting(false);
+    props.navigate('/');
   },
 })(InnerForm);
 
-const Login = () => {
+const AddNewVideoForm = () => {
 
-  const { userInfo } = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [message, setMessage] = useState<string>("");
@@ -86,15 +89,12 @@ const Login = () => {
     <div className='flex justify-center mt-20'>
       <div className='flex flex-col w-80 bg-slate-300 text-purple-950 shadow-lg rounded-md p-4'>
         <h1 className='font-bold text-xl mb-5'>
-          Register
+          Add new Video
         </h1>
-        {
-          userInfo ? (<div>You are already logged in!</div>)
-            : <LoginForm message={message} dispatch={dispatch} navigate={navigate} />
-        }
+        <LoginForm message={message} dispatch={dispatch} navigate={navigate} />
       </div>
     </div>
   )
 }
 
-export default Login;
+export default AddNewVideoForm;
