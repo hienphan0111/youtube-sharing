@@ -5,10 +5,30 @@ import dotenv from 'dotenv';
 import connectDB from './ultils/db.js';
 import userRoutes from './routes/userRoutes.js';
 import videoSharedRoutes from './routes/videoSharedRoutes.js';
+import http from 'http';
+import { Server } from 'socket.io';
 
 const app = express();
 
 dotenv.config();
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    method: ['GET', 'POST'],
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on('new-video-shared', (data) => {
+    console.log(data);
+    socket.broadcast.emit('new-video-shared', data);
+  })
+});
 
 app.use(cors({
   origin: 'http://127.0.0.1:5173',
