@@ -10,7 +10,9 @@ const URL = 'http://localhost:5000/api/videos-shared';
 export const fetchVideoShared = createAsyncThunk(
   'videoShared/getVideoShared',
   async ( ) => {
+    console.log('fetchVideoShared');
     const res = await axios.get(URL);
+    console.log(res.data);
     return res.data;
 });
 
@@ -26,7 +28,6 @@ export const addVideoShared = createAsyncThunk<any, any, { state: RootState}>(
       },
     }
     const res = await axios.post(`${URL}/create`, data, config);
-    //socket.emit('new-video-shared', res.data);
     return res.data;
 });
 
@@ -52,18 +53,21 @@ export interface VideoShared {
   description: string;
   url: string;
   user: string;
+  username: string;
 }
 
 export interface VideoSharedState {
   isLoading: boolean;
   error: any;
   videoShared: VideoShared[];
+  newVideoShared: VideoShared | null;
 }
 
 const inititalSate: VideoSharedState = {
   isLoading: false,
   error: null,
   videoShared: [],
+  newVideoShared: null,
 }
 
 const videoSharedSlice = createSlice({
@@ -80,9 +84,14 @@ const videoSharedSlice = createSlice({
         state.error = action.error;
       })
       .addCase(fetchVideoShared.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.videoShared = action.payload;
-        state.error = null;
+        const newState: VideoSharedState = {
+          ...state,
+          isLoading: false,
+          videoShared: action.payload,
+          error: null,
+        }
+        console.log(newState);
+        return newState;
       })
       .addCase(addVideoShared.pending, (state) => {
         state.isLoading = true;
@@ -94,6 +103,7 @@ const videoSharedSlice = createSlice({
       .addCase(addVideoShared.fulfilled, (state, action) => {
         state.isLoading = false;
         state.videoShared.push(action.payload);
+        state.newVideoShared = action.payload;
         state.error = null;
       })
       .addCase(deleteVideoShared.pending, (state) => {

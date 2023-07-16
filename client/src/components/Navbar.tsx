@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { NavLink as Link, Outlet } from 'react-router-dom';
 import { BsBellFill } from 'react-icons/bs';
 import { FaUser } from 'react-icons/fa';
@@ -7,26 +7,55 @@ import { userSelector } from '../store/userSlice';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useAppDispatch } from '../store/hooks';
 import { logout } from '../store/userSlice';
+import { useEffect, useContext } from 'react';
+import axios from 'axios';
+import SocketContext from '../contexts/Socket/Context';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Navbar = () => {
   const selectUser = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
+  const { updateVideoShared } = useContext(SocketContext).SocketState;
 
   const [toggle, setToggle] = useState(false);
+  const ref = useRef<HTMLInputElement>(null);
 
   const handleLogout = () => {
     dispatch(logout());
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (toggle && ref.current && !ref.current.contains(event.target)) {
+        setToggle(false);
+      }
+    }
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    }
+  }, [toggle]);
+
+  useEffect(() => {
+    console.log(updateVideoShared);
+    if (updateVideoShared) {
+      const notify = () => toast(`${updateVideoShared.username} shared a new video: ${updateVideoShared.title}`);
+      notify();
+    }
+  }, [updateVideoShared]);
+
   return (
     <div className='flex justify-between w-full p-5'>
+      <div>
+        <Toaster />
+      </div>
       <div className='w-full flex'>
         <Link to='/' className='text-red-600 text-xl font-bold'>Youtube sharing</Link>
       </div>
       <nav className='w-full flex justify-end items-center gap-2'>
         {
           selectUser.userInfo ? (
-            <div className='flex relative text-gray-800 items-center gap-3'>
+            <div className='flex relative text-gray-800 items-center gap-3' ref={ref}>
               <div className='w-8 h-8 rounded-full border flex justify-center items-center border-zinc-800'>
                 <FaUser />
               </div>

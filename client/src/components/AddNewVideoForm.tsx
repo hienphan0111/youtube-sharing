@@ -72,10 +72,11 @@ const LoginForm = withFormik<LoginFormProps, FormValues> ({
     description: Yup.string(),
   }),
 
-  handleSubmit: (values, { props, setSubmitting }) => {
+  handleSubmit: (values, { props, setSubmitting, resetForm }) => {
     props.dispatch(addVideoShared(values));
     setSubmitting(false);
-    props.navigate('/');
+    resetForm();
+    props.navigate('/myvideo');
   },
 })(InnerForm);
 

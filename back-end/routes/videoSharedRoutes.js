@@ -28,6 +28,7 @@ const createVideoShared = asyncHandler( async (req, res) => {
 
   const videoShared = new VideoShared({
     user: req.user._id,
+    username: req.user.name,
     title,
     description,
     url,

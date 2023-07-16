@@ -63,7 +63,25 @@ const loginUser = asyncHandler(async(req, res) => {
   }
 });
 
+// get user profile
+
+const getUserProfile = asyncHandler(async(req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if(user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
 userRoutes.route('/register').post(registerUser);
 userRoutes.route('/login').post(loginUser);
+userRoutes.route('/:id').get(getUserProfile);
 
 export default userRoutes;
