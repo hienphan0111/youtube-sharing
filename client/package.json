@@ -14,6 +14,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@remix-run/deno": "^1.18.1",
     "@remix-run/dev": "^1.18.1",
+    "@remix-run/react": "^1.18.1",
     "@types/redux-mock-store": "^1.0.3",
     "axios": "^1.4.0",
     "axios-mock-adapter": "^1.21.5",
