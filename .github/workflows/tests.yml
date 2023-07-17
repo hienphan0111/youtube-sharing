@@ -5,13 +5,21 @@ on: [push]
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x, 20.x]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cypress run
         uses: cypress-io/github-action@v2
-        with:
-          build: npm run build
-          start: npm start
-      - name: Jest run
-        run: npm test
+
+      - name: Install dependencies
+        run: yarn ci
+        working-directory: ./client
+
+      - name: Run test
+        run: yarn test
+        working-directory: ./client
