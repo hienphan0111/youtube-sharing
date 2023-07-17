@@ -3,46 +3,50 @@ version: "4.21"
 
 # services : is a list of our container
 services:
+  mongodb:
+    image: "mongo"
+    container_name: mongodb
+    volumes:
+      - data:/data/db
+    ports:
+      - 27017:27017
+
   client:
-    image: webapp-client
-    restart: always
+    build: ./client
     ports:
       - "3000:3000"
-    working_dir: /client
-    volumes: 
+    volumes:
+      - logs:/client/logs
       - ./client:/client
       - /client/node_modules
-    entrypoint: ["npm", "start"]
-    links:
+    stdin_open: true
+    tty: true
+    depends_on:
       - api
     networks:
-      - webappnetwork
+      - yt-sharing
 
   api:
-    image: webapp-api
-    restart: always
+    build: /back-end
     ports:
       - "5000:5000"
-    volumes: 
+    working_dir: /back-end
+    volumes:
+      - logs:/back-end/logs
       - ./api:/api
       - /api/node_modules
+    env_file:
+      - ./back-end/.env
     depends_on: 
       - mongodb
     networks:
-      - webappnetwork
-
-  mongodb:
-    image: mongo
-    restart: always
-    container_name: mongodb
-    volumes:
-      - ./data-node:/data/db
-    ports:
-      - 27017:27017
-    command: mongod -noauth --smallfiles
-    networks:
-      - webappnetwork
+      - yt-sharing
 
 networks:
-  webappnetwork:
+  yt-sharing:
     driver: bridge
+
+volumes:
+  data:
+    driver: local
+  logs:
