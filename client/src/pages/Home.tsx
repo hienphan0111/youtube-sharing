@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   const { videoShared, isLoading } = useAppSelector(videoSharedSelector);
 
   useEffect(() => {
-    dispatch(fetchVideoShared());
+    void dispatch(fetchVideoShared());
   }, []);
 
   return (

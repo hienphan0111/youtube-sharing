@@ -5,9 +5,7 @@ import { userSelector } from '../store/userSlice';
 import { videoSharedSelector, fetchVideoShared } from '../store/videoSharedSlice';
 import { Modal, VideoCard } from '../components';
 
-type Props = {}
-
-const MyVideo = (props: Props) => {
+const MyVideo = () => {
   const dispatch = useAppDispatch();
   const { userInfo } = useAppSelector(userSelector);
   const { videoShared, newVideoShared } = useAppSelector(videoSharedSelector);
@@ -22,7 +20,7 @@ const MyVideo = (props: Props) => {
     if (!userInfo) {
       navigate('/login');
     }
-    dispatch(fetchVideoShared());
+    void dispatch(fetchVideoShared());
   }, [])
 
   return (

@@ -8,7 +8,6 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { useAppDispatch } from '../store/hooks';
 import { logout } from '../store/userSlice';
 import { useEffect, useContext } from 'react';
-import axios from 'axios';
 import SocketContext from '../contexts/Socket/Context';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -25,8 +24,8 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (toggle && ref.current && !ref.current.contains(event.target)) {
+    const handleClickOutside = (event: Event) => {
+      if (toggle && ref.current && !ref.current.contains(event.target as HTMLButtonElement)) {
         setToggle(false);
       }
     }

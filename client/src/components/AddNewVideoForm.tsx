@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Form, Field, Formik, FormikProps, withFormik  } from "formik";
+import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { Form, Field, FormikProps, withFormik  } from "formik";
 import * as Yup from "yup";
 import { useAppDispatch } from '../store/hooks';
 import { AppDispatch } from '../store/store';
 import { addVideoShared } from '../store/videoSharedSlice';
 
-interface FormValues {
+export interface FormValues {
   title: string;
   description: string;
   url: string;
@@ -15,7 +15,7 @@ interface FormValues {
 interface OtherProps {
   message?: string;
   dispatch?: AppDispatch;
-  navigate?: any;
+  navigate?: NavigateFunction;
 }
 
 const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
@@ -51,11 +51,11 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
 interface LoginFormProps {
   message?: string;
   dispatch: AppDispatch;
-  navigate: any;
+  navigate: NavigateFunction;
 }
 
 const LoginForm = withFormik<LoginFormProps, FormValues> ({
-  mapPropsToValues: props => {
+  mapPropsToValues: () => {
     return {
       title: "",
       description: "",
@@ -73,7 +73,7 @@ const LoginForm = withFormik<LoginFormProps, FormValues> ({
   }),
 
   handleSubmit: (values, { props, setSubmitting, resetForm }) => {
-    props.dispatch(addVideoShared(values));
+    void props.dispatch(addVideoShared(values));
     setSubmitting(false);
     resetForm();
     props.navigate('/myvideo');

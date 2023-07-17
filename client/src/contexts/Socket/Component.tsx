@@ -1,17 +1,14 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import React, { PropsWithChildren, useEffect } from 'react'
 import { defaultSocketContextState, SocketContextProvider, SocketReducer } from './Context';
 import { useSocket } from '../../store/useSocket';
 import { useAppSelector } from '../../store/hooks';
 import { VideoShared, videoSharedSelector } from '../../store/videoSharedSlice';
 
-export interface ISocketContextComponentProps extends PropsWithChildren {
-
-}
+export type ISocketContextComponentProps = PropsWithChildren
 const SocketContextComponent: React.FunctionComponent<ISocketContextComponentProps> = (props) => {
   const { children } = props;
 
   const [SocketState, SocketDispatch] = React.useReducer(SocketReducer, defaultSocketContextState);
-  const [loading, setLoading] = useState(true);
   const { newVideoShared } = useAppSelector(videoSharedSelector);
 
   const socket = useSocket('ws://localhost:5000', {
@@ -46,13 +43,10 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
 
     socket.on('new_video_shared', (data: { video: VideoShared }) => {
       SocketDispatch({ type: 'update_video_shared', payload: data.video });
-      console.log(data);
-      setLoading(false);
     });
   };
 
   const SendHandshake = () => {
-    console.log('Sending handshake...' + newVideoShared);
     if (newVideoShared) {
       socket.emit('new_video_shared', { video: newVideoShared });
     }

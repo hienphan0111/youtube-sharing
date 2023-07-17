@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Form, Field, Formik, FormikProps, withFormik  } from "formik";
+import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { Form, Field, FormikProps, withFormik  } from "formik";
 import * as Yup from "yup";
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { login } from '../store/userSlice';
@@ -15,7 +15,7 @@ interface FormValues {
 interface OtherProps {
   message?: string;
   dispatch?: AppDispatch;
-  navigate?: any;
+  navigate?: NavigateFunction;
 }
 
 const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
@@ -47,7 +47,7 @@ interface LoginFormProps {
   initialEmail?: string;
   message?: string;
   dispatch: AppDispatch;
-  navigate: any;
+  navigate: NavigateFunction;
 }
 
 const LoginForm = withFormik<LoginFormProps, FormValues> ({
@@ -67,7 +67,7 @@ const LoginForm = withFormik<LoginFormProps, FormValues> ({
   }),
 
   handleSubmit: (values, { props, setSubmitting }) => {
-    props.dispatch(login(values));
+    void props.dispatch(login(values));
     setTimeout(() => {
       props.navigate('/');
       setSubmitting(false);

@@ -1,50 +1,47 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios, { AxiosResponse } from 'axios';
 import { RootState } from './store';
-import io from 'socket.io-client';
-
-//const socket = io.connect('http://localhost:5000');
+import { FormValues } from '../components/AddNewVideoForm';
 
 const URL = 'http://localhost:5000/api/videos-shared';
 
 export const fetchVideoShared = createAsyncThunk(
   'videoShared/getVideoShared',
   async ( ) => {
-    console.log('fetchVideoShared');
     const res = await axios.get(URL);
-    console.log(res.data);
-    return res.data;
+    return res.data as VideoShared[];
 });
 
-export const addVideoShared = createAsyncThunk<any, any, { state: RootState}>(
+export const addVideoShared = createAsyncThunk< unknown, FormValues, { state: RootState}>(
   'videoShared/addVideoShared',
   async ( data: { title: string, description: string, url: string }, { getState } ) => {
     const { userInfo } = getState().user;
 
     const config = {
       headers: {
-        Authorization: `Bearer ${userInfo?.token}`,
+        Authorization: `Bearer ${userInfo.token}`,
         'Content-Type': 'application/json'
       },
     }
     const res = await axios.post(`${URL}/create`, data, config);
-    return res.data;
+    return res.data as VideoShared;
 });
 
-export const deleteVideoShared = createAsyncThunk<any, any, { state: RootState}>(
+export const deleteVideoShared = createAsyncThunk<string, string, { state: RootState}>(
   'videoShared/deleteVideoShared',
   
   async ( id, { getState } ) => {
     const userInfo = getState().user.userInfo;
-    const res = await axios.delete(`${URL}/${id}`,
-    {
+
+    const config = {
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo?.token}`
-      }
+        Authorization: `Bearer ${userInfo.token}`,
+        'Content-Type': 'application/json'
+      },
     }
-    );
-    return res.data;
+
+    const res: AxiosResponse<string, string> = await axios.delete(`${URL}/${id}`, config);
+    return res.data ;
 });
 
 export interface VideoShared {
@@ -58,7 +55,7 @@ export interface VideoShared {
 
 export interface VideoSharedState {
   isLoading: boolean;
-  error: any;
+  error: unknown | null;
   videoShared: VideoShared[];
   newVideoShared: VideoShared | null;
 }
@@ -113,9 +110,8 @@ const videoSharedSlice = createSlice({
         state.isLoading = false;
         state.error = action.error;
       })
-      .addCase(deleteVideoShared.fulfilled, (state, action) => {
+      .addCase(deleteVideoShared.fulfilled, (state) => {
         state.isLoading = false;
-        state.videoShared = action.payload;
         state.error = null;
       })
   }

@@ -45,7 +45,7 @@ export interface ISocketContext {
 
 const SocketContext = React.createContext<ISocketContext>({
   SocketState: defaultSocketContextState,
-  SocketDispatch: () => {},
+  SocketDispatch: () => undefined,
 });
 
 export const SocketContextConsumer = SocketContext.Consumer;

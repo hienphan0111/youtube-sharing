@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Form, Field, Formik, FormikProps, withFormik  } from "formik";
+import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { Form, Field, FormikProps, withFormik  } from "formik";
 import * as Yup from "yup";
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { register } from '../store/userSlice';
@@ -16,7 +16,7 @@ interface FormValues {
 interface OtherProps {
   message?: string;
   dispatch?: AppDispatch;
-  navigate?: any;
+  navigate?: NavigateFunction;
 }
 
 const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
@@ -52,7 +52,7 @@ interface RegisterFormProps {
   initialEmail?: string;
   message?: string;
   dispatch: AppDispatch;
-  navigate: any;
+  navigate: NavigateFunction;
 }
 
 const RegisterForm = withFormik<RegisterFormProps, FormValues> ({
@@ -76,7 +76,7 @@ const RegisterForm = withFormik<RegisterFormProps, FormValues> ({
   }),
 
   handleSubmit: (values, { props, setSubmitting, resetForm }) => {
-    props.dispatch(register(values));
+    void props.dispatch(register(values));
     resetForm();
     setSubmitting(false);
     props.navigate('/');
