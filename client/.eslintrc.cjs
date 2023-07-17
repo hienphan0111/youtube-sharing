@@ -24,4 +24,15 @@ module.exports = {
     ],
     '@typescript-eslint/no-non-null-assertion': 'off',
   },
+  ignorePatterns: [
+    "dist/",
+    "build/",
+    "back-end",
+    "**.test.js",
+    "**.test.jsx",
+    "**.test.ts",
+    "**.test.tsx",
+    "**/test-ultils.tsx",
+    "**/setupTest.ts",
+  ]
 }

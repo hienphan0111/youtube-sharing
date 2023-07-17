@@ -1,12 +1,11 @@
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
-import './App.css'
 import { Home, Login, Register, MyVideo, PlayerVideo } from './pages';
 import { Navbar } from './components';
 
 function App() {
 
   return (
-    <div className='w-full flex justify-center flex-col items-center'>
+    <div className='w-full max-w-[1028px] mx-auto my-0 p-[2rem] flex justify-center flex-col items-center'>
       <Router>
         <Navbar />
         <Routes>

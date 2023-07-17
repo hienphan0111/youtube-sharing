@@ -36,7 +36,6 @@ const Navbar = () => {
   }, [toggle]);
 
   useEffect(() => {
-    console.log(updateVideoShared);
     if (updateVideoShared) {
       const notify = () => toast(`${updateVideoShared.username} shared a new video: ${updateVideoShared.title}`);
       notify();

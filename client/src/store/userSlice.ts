@@ -1,16 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from './store';
+//import '../mock-localStorage';
 
 const URL = 'http://localhost:5000/api/users';
-
-function createAction(arg0: string) {
-  
-}
-
-export const loginPending = createAction('users/login/pending');
-export const loginRejected = createAction('users/login/rejected');
-export const loginFulfilled = createAction('users/login/fulfilled');
 
 export const login = createAsyncThunk(
   'users/login',

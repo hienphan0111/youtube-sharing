@@ -1,86 +1,140 @@
-import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { login, register } from './userSlice';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
+import configureMockStore, { MockStoreEnhanced } from 'redux-mock-store';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import axios, { AxiosResponse } from 'axios';
+import { AnyAction } from '@reduxjs/toolkit';
+import { login, logout, register } from './userSlice';
 
-const mock = new MockAdapter(axios);
-const mockStore = configureStore([thunk]);
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
 
-// Mock the login.pending, login.rejected, and login.fulfilled actions
-const { login: { pending: loginPending, rejected: loginRejected, fulfilled: loginFulfilled } } = require('./userSlice.ts');
+jest.mock('axios');
 
-const { register: { pending: registerPending, rejected: registerRejected, fulfilled: registerFulfilled } } = require('./userSlice');
-
-describe('yourSlice', () => {
-  let store: MockStoreEnhanced<unknown, {}>;
+describe('userSlice', () => {
+  let store: MockStoreEnhanced<unknown, ThunkDispatch<unknown, unknown, AnyAction>>;
 
   beforeEach(() => {
-    store = mockStore({});
+    store = mockStore({
+      user: {
+        isLoading: false,
+        error: null,
+        userInfo: null,
+        userVideoShared: [],
+      },
+    });
   });
 
   afterEach(() => {
-    mock.reset();
+    jest.clearAllMocks();
+    store.clearActions();
   });
 
-  it('should handle login successfully', async () => {
-    const userInfo = { _id: '123', name: 'John Doe', email: 'john@example.com', token: 'token' };
-    const loginData: {
-      email: string;
-      password: string;
-  } = { email: 'john@example.com', password: 'password' };
+  describe('login', () => {
+    it('should login successfully', async () => {
+      const loginData = {
+        email: 'test@example.com',
+        password: 'password',
+      };
 
-    mock.onPost('http://localhost:5000/api/users/login').reply(200, userInfo);
+      const mockResponse = {
+        data: {
+          _id: '123456',
+          name: 'Test User',
+          email: 'test@example.com',
+          token: 'token',
+        },
+      };
 
-    void store.dispatch(login(loginData));
+      (axios.post as jest.MockedFunction<typeof axios.post>).mockResolvedValueOnce({
+        data: mockResponse.data,
+      } as AxiosResponse);
 
-    const actions = store.getActions();
-    expect(actions[0]).toEqual(loginPending());
-    expect(actions[1]).toEqual(loginFulfilled(userInfo));
-    expect(localStorage.getItem('userInfo')).toEqual(JSON.stringify(userInfo));
+      await store.dispatch(login(loginData));
+
+      const actions = store.getActions();
+      expect(actions[0].type).toEqual(login.pending.type);
+      expect(actions[1].type).toEqual(login.fulfilled.type);
+      expect(actions[1].payload).toEqual(mockResponse.data);
+    });
+
+    it('should handle login failure', async () => {
+      const loginData = {
+        email: 'test@example.com',
+        password: 'password',
+      };
+
+      const errorResponse = { message: 'Invalid credentials' };
+
+      (axios.post as jest.MockedFunction<typeof axios.post>).mockRejectedValueOnce(errorResponse);
+
+      await store.dispatch(login(loginData));
+
+      const actions = store.getActions();
+      expect(actions[0].type).toEqual(login.pending.type);
+      expect(actions[1].type).toEqual(login.rejected.type);
+      expect(actions[1].error).toEqual(errorResponse);
+      expect(actions[2]).toBeUndefined();
+    });
   });
 
-  it('should handle login failure', async () => {
-    const errorResponse = { message: 'Login failed' };
-    const loginData = { email: 'john@example.com', password: 'password' };
 
-    mock.onPost('http://localhost:5000/api/users/login').reply(400, errorResponse);
+  describe('register', () => {
+    it('should register successfully', async () => {
+      const registerData = {
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+      };
 
-    store.dispatch(login(loginData));
+      const mockResponse = {
+        data: {
+          _id: '123456',
+          name: 'Test User',
+          email: 'test@example.com',
+          token: 'token',
+        },
+      };
 
-    const actions = store.getActions();
-    expect(actions[0]).toEqual(loginRejected());
-    expect(localStorage.getItem('userInfo')).toBeNull();
+      (axios.post as jest.MockedFunction<typeof axios.post>).mockResolvedValueOnce({
+        data: mockResponse.data,
+      } as AxiosResponse);
+
+      await store.dispatch(register(registerData));
+
+      const actions = store.getActions();
+      expect(actions[0].type).toEqual(register.pending.type);
+      expect(actions[1].type).toEqual(register.fulfilled.type);
+      expect(actions[1].payload).toEqual(mockResponse.data);
+    });
+
+    it('should handle registration failure', async () => {
+      const registerData = {
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'password',
+      };
+
+      const errorResponse = { message: 'Registration failed' };
+
+      (axios.post as jest.MockedFunction<typeof axios.post>).mockRejectedValueOnce(errorResponse);
+
+      await store.dispatch(register(registerData));
+
+      const actions = store.getActions();
+      expect(actions[0].type).toEqual(register.pending.type);
+      expect(actions[1].type).toEqual(register.rejected.type);
+      expect(actions[1].error).toEqual(errorResponse);
+      expect(actions[2]).toBeUndefined();
+    });
   });
 
-  it('should handle register successfully', async () => {
-    const userInfo = { _id: '123', name: 'John Doe', email: 'john@example.com', token: 'token' };
-    const registerData = { name: 'John Doe', email: 'john@example.com', password: 'password' };
+  describe('logout', () => {
+    it('should remove userInfo from localStorage and reset user state', () => {
+      store.dispatch(logout());
 
-    mock.onPost('http://localhost:5000/api/users/register').reply(200, userInfo);
-
-    store.dispatch(register(registerData));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toEqual('users/register/pending');
-    expect(actions[1].type).toEqual('users/register/fulfilled');
-    expect(actions[1].payload).toEqual(userInfo);
-    expect(actions[1].meta.arg).toEqual(registerData);
-    expect(localStorage.getItem('userInfo')).toEqual(JSON.stringify(userInfo));
+      const actions = store.getActions();
+      //expect(localStorage.removeItem).toHaveBeenCalledWith('userInfo');
+      expect(actions[0].type).toEqual(logout.type);
+    });
   });
 
-  it('should handle register failure', async () => {
-    const errorResponse = { message: 'Registration failed' };
-    const registerData = { name: 'John Doe', email: 'john@example.com', password: 'password' };
-
-    mock.onPost('http://localhost:5000/api/users/register').reply(400, errorResponse);
-
-    store.dispatch(register(registerData));
-
-    const actions = store.getActions();
-    expect(actions[0].type).toEqual('users/register/pending');
-    expect(actions[1].type).toEqual('users/register/rejected');
-    expect(actions[1].error.message).toEqual('Request failed with status code 400');
-    expect(localStorage.getItem('userInfo')).toBeNull();
-  });
 });

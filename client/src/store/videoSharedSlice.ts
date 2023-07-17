@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axios, { AxiosResponse } from 'axios';
 import { RootState } from './store';
 import { FormValues } from '../components/AddNewVideoForm';
@@ -12,14 +12,15 @@ export const fetchVideoShared = createAsyncThunk(
     return res.data as VideoShared[];
 });
 
-export const addVideoShared = createAsyncThunk< unknown, FormValues, { state: RootState}>(
+export const addVideoShared = createAsyncThunk< VideoShared, FormValues, { state: RootState}>(
   'videoShared/addVideoShared',
   async ( data: { title: string, description: string, url: string }, { getState } ) => {
     const { userInfo } = getState().user;
 
+    /* eslint-disable */
     const config = {
       headers: {
-        Authorization: `Bearer ${userInfo.token}`,
+        Authorization: `Bearer ${userInfo?.token}`,
         'Content-Type': 'application/json'
       },
     }
@@ -35,11 +36,11 @@ export const deleteVideoShared = createAsyncThunk<string, string, { state: RootS
 
     const config = {
       headers: {
-        Authorization: `Bearer ${userInfo.token}`,
+        Authorization: `Bearer ${userInfo?.token}`,
         'Content-Type': 'application/json'
       },
     }
-
+    /* eslint-enable */
     const res: AxiosResponse<string, string> = await axios.delete(`${URL}/${id}`, config);
     return res.data ;
 });
@@ -97,10 +98,10 @@ const videoSharedSlice = createSlice({
         state.isLoading = false;
         state.error = action.error;
       })
-      .addCase(addVideoShared.fulfilled, (state, action) => {
+      .addCase(addVideoShared.fulfilled, (state, {payload}: PayloadAction<VideoShared>) => {
         state.isLoading = false;
-        state.videoShared.push(action.payload);
-        state.newVideoShared = action.payload;
+        state.videoShared.push(payload);
+        state.newVideoShared = payload;
         state.error = null;
       })
       .addCase(deleteVideoShared.pending, (state) => {

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { Form, Field, FormikProps, withFormik  } from "formik";
 import * as Yup from "yup";
@@ -19,7 +18,7 @@ interface OtherProps {
 }
 
 const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
-  const { touched, errors, isSubmitting, message } = props;
+  const { touched, errors, isSubmitting } = props;
   const styles = {
     input: 'bg-slate-200 p-1 w-full rounded-sm',
     error: 'text-red-500 text-sm italic text-left mt-2',
@@ -43,7 +42,6 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
       <button type="submit" disabled={isSubmitting} className='bg-green-700 text-gray-300 p-1 rounded-md hover:bg-green-600 mt-3'>
         Add video
       </button>
-      <div>{message}</div>
     </Form>
   )
 }
@@ -84,7 +82,6 @@ const AddNewVideoForm = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [message, setMessage] = useState<string>("");
 
   return (
     <div className='flex justify-center mt-20'>
@@ -92,7 +89,7 @@ const AddNewVideoForm = () => {
         <h1 className='font-bold text-xl mb-5'>
           Add new Video
         </h1>
-        <LoginForm message={message} dispatch={dispatch} navigate={navigate} />
+        <LoginForm dispatch={dispatch} navigate={navigate} />
       </div>
     </div>
   )
