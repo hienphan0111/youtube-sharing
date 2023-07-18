@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 import { RootState } from './store';
 import { FormValues } from '../components/AddNewVideoForm';
 
-const URL = 'http://localhost:5000/api/videos-shared';
+const URL = `${import.meta.env.VITE_API_URL}/api/videos-shared`;
 
 export const fetchVideoShared = createAsyncThunk(
   'videoShared/getVideoShared',

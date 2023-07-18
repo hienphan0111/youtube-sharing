@@ -3,7 +3,7 @@ import axios from 'axios';
 import { RootState } from './store';
 //import '../mock-localStorage';
 
-const URL = 'http://localhost:5000/api/users';
+const URL = `${import.meta.env.VITE_API_URL}/api/users`
 
 export const login = createAsyncThunk(
   'users/login',
@@ -16,6 +16,7 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   'users/register',
   async ( data: { name: string, email: string, password: string} ) => {
+    console.log(URL);
     const res = await axios.post(`${URL}/register`, data)
     return res.data as UserInfo;
   }
