@@ -6,10 +6,13 @@ services:
   mongodb:
     image: "mongo"
     container_name: mongodb
+    restart: always
     volumes:
       - data:/data/db
     ports:
       - 27017:27017
+    networks:
+      - yt-sharing
 
   client:
     build: ./client
@@ -27,9 +30,12 @@ services:
       - yt-sharing
 
   api:
-    build: /back-end
+    build: ./back-end
     ports:
       - "5000:5000"
+    environment:
+      MONGO_URL: mongodb://mongodb:27017
+      DB_NAME: yt-sharing
     working_dir: /back-end
     volumes:
       - logs:/back-end/logs
