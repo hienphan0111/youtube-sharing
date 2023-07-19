@@ -47,23 +47,36 @@ This App allow users share their favorite youtube video.
 
 ## 🛠 Built With <a name="built-with"></a>
 
+### Front-end
+
 * [![React][React.js]][React-url]
 * [![Redux][redux.js]][Redux-url]
-* [![TailwindCSS][TailwindCSS][tailwind-url]]
+* [![TailwindCSS][TailwindCSS]][tailwind-url]
+
+### Back-end
+
+* [![NodeJS][NodeJS]][Nodejs-url]
+* [![ExpressJS][ExpressJS]][expressjs-url]
+* [![SocketIO][SocketIO]][socketio-url]
+* [![JWT][jwt]][jwt-url]
+
+### Database
+
+* [![MongoDB][MongoDB]][Mongodb-url]
+
+### Development tools
+
+* [![Docker][docker]][docker-url]
+* [![PostMan][postman]][postman-url]
+* [![Vite][Vite]][vite-url]
+
+### Deployment flatform
+
+* [![Render][Render]][render-url]
 
 ## 🛠 Kanban board <a name="kanban-board"></a>
 
-For management this project, I setup kanban board in which I splited project into a bundle of tasks. [Click here]() to overview this kanban board.
-- Screen shots of Kanban board:
-  - Init project:
-  <div align="center">
-    <img src="" alt="logo" width="auto"  height="250" />
-  <div>
-  <br />
-  - Final status:
-  <div align="center">
-    <img src="" alt="logo" width="auto"  height="250" />
-  <div>
+For management this project, I setup kanban board in which I splited project into a bundle of tasks. [Click here](https://github.com/users/hienphan0111/projects/12) to overview this kanban board.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -88,11 +101,11 @@ To get a local copy up and running, follow these steps.
 
 1. Download the **Zip** file or clone the repo with:
 ```bash
-git clone https://github.com/hienphan/youtube-sharing.git
+  git clone https://github.com/hienphan/youtube-sharing.git
 ```
 3. To access cloned directory run:
 ```bash
-cd youtube-sharing
+  cd youtube-sharing
 ```
 
 ### Install
@@ -100,50 +113,96 @@ cd youtube-sharing
 4. Access front end
 > To install linters and other project's dependencies run:
 ```bash
-npm install
+  npm install
 ```
 
 - run command 
 ```bash
-cd client
+  cd client
 ```
 
 - Setup .env file:
   - Create an .env file and put it in client folder and your back-end url variable here.
 
 ```bash
-VITE_API_URL=<API_URL>
+  VITE_API_URL=<API_URL>
 ```
 
 To run the front, execute the following command:
 
 ```bash
-npm dev
+  npm dev
 ```
 
 5. Access back end
 > To install linters and other project's dependencies run:
 ```bash
-yarn install
+  yarn install
 ```
 
 - run command 
 ```bash
-cd back-end
+  cd back-end
 ```
 
 - Setup .env file:
   - Create an .env file and put it in client folder and your data base url and secret key variable here.
 
 ```bash
-MONGO_URLL=<DATABASE_URL>
-JWT_SECRET=<SECRET_JSON_TOKEN>
+  MONGO_URL=<DATABASE_URL>
+  JWT_SECRET=<SECRET_JSON_TOKEN>
 ```
 
 To run the api, execute the following command:
 
 ```bash
-yarn start
+  yarn start
+```
+
+### Implement docker
+
+1. Verify Docker version and also login to Docker Hub
+
+```bash
+  docker version
+  docker login
+```
+
+2. Pull Image from Docker Hub
+
+```bash
+  docker pull --all-tags kevinphan0111/youtubesharing 
+
+```
+
+3. Run the downloaded Docker Image & Access the Application
+
+```bash
+  docker build -t mongo:latest
+  docker run --name client -p 3000:3000 -d kevinphan0111/youtubesharing:client
+  docker run --name api -p 5000:5000 -d kevinphan0111/youtubesharing:api
+```
+
+4. Connect to Container Terminal
+
+```bash
+  docker exec -it youtube-sharing /bin/sh 
+
+```
+
+5. Container Stop, Start
+
+```bash
+  docker stop <container-name>
+  docker start  <container-name>
+
+```
+
+5. Acces app in browser
+
+```bash
+  http://localhost:3000
+
 ```
 
 <!-- 
@@ -264,5 +323,23 @@ This project is contributed under [GNU 3.0](./LICENSE.md) and [Creative commons]
 [React-url]: https://reactjs.org/
 [Redux.js]: https://img.shields.io/badge/-Redux-20232A?style=for-the-badge&logo=redux&logoColor=violet
 [Redux-url]: http://redux.js.org
-[TailwindCSS]: https://img.shields.io/badge/-TailwindCSS-20232A?style=for-the-badge&logo=tailwind&logoColor=61DAFB
+[TailwindCSS]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
 [Tailwind-url]: http://tailwind.org
+[Render]: https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white
+[Render-url]: http://render.com
+[MongoDB]: https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white
+[Mongo-url]: http://mongodb.org
+[Docker]: https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white
+[Docker-url]: http://docker.com
+[JWT]: https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white
+[JWT-url]: http://jwt.com
+[NodeJS]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white
+[Nodejs-url]: http://nodejs.org
+[ExpressJS]: https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white
+[Express-url]: http://expressjs.org
+[PostMan]: https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white
+[Postman-url]: http://postman.org
+[Socketio]: https://img.shields.io/badge/Socket.io-010101?&style=for-the-badge&logo=Socket.io&logoColor=white
+[Socketio-url]: http://socket.io
+[Vite]: https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E
+[Vite-url]: http://vite.org
