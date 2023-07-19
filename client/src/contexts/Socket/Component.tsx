@@ -11,7 +11,8 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   const [SocketState, SocketDispatch] = React.useReducer(SocketReducer, defaultSocketContextState);
   const { newVideoShared } = useAppSelector(videoSharedSelector);
 
-  const socket = useSocket('ws://localhost:5000', {
+  const ioUrl = import.meta.env.VITE_API_URL;
+  const socket = useSocket(ioUrl, {
     reconnectionAttempts: 5,
     reconnectionDelay: 5000,
     autoConnect: false,

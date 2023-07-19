@@ -69,12 +69,9 @@ For management this project, I setup kanban board in which I splited project int
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 🚀 Live Demo <a name="live-demo"></a>
-To see the demo version, you can <a href=""> - [Clik here]() </a>
+To see the demo version, you can [Clik here](https://youtube-sharing-l4x6.onrender.com/)
 - Want to try admin features, use below account:
-```bash
-username: admin@admin.com
-password: 123456
-```
+
 
 <!-- GETTING STARTED -->
 
@@ -97,21 +94,58 @@ git clone https://github.com/hienphan/youtube-sharing.git
 ```bash
 cd youtube-sharing
 ```
-3. Open it with the live server
 
 ### Install
 
+4. Access front end
 > To install linters and other project's dependencies run:
 ```bash
-yarn
+npm install
 ```
 
-4. Get Client_id and Client_Secret
-
-- Clone back-end api 
+- run command 
 ```bash
-git clone https://github.com/hakichris/youtube-sharing-api.git
+cd client
 ```
+
+- Setup .env file:
+  - Create an .env file and put it in client folder and your back-end url variable here.
+
+```bash
+VITE_API_URL=<API_URL>
+```
+
+To run the front, execute the following command:
+
+```bash
+npm dev
+```
+
+5. Access back end
+> To install linters and other project's dependencies run:
+```bash
+yarn install
+```
+
+- run command 
+```bash
+cd back-end
+```
+
+- Setup .env file:
+  - Create an .env file and put it in client folder and your data base url and secret key variable here.
+
+```bash
+MONGO_URLL=<DATABASE_URL>
+JWT_SECRET=<SECRET_JSON_TOKEN>
+```
+
+To run the api, execute the following command:
+
+```bash
+yarn start
+```
+
 <!-- 
 - Run
 ```bash
@@ -158,11 +192,7 @@ user.save
 ### Usage
 
 -->
-To run the project, execute the following command:
 
-```bash
-yarn dev
-```
 <!--
 Example command:
 
@@ -175,13 +205,13 @@ Example command:
 
 To run tests, run the following command:
 
-<!--
-Example command:
+
+navigate to client folder:
 
 ```sh
-  bin/rails test test/models/article_test.rb
+  npm run test
 ```
---->
+-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
