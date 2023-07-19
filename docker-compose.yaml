@@ -4,53 +4,57 @@ version: "4.21"
 # services : is a list of our container
 services:
   mongodb:
-    image: "mongo"
+    image: mongo:latest
     container_name: mongodb
     restart: always
     volumes:
       - data:/data/db
     ports:
       - 27017:27017
-    networks:
-      - yt-sharing
+    # networks:
+    #   - yt-sharing
 
   client:
-    build: ./client
+    image: react_app_template
+    build:
+      context: ./client
     ports:
-      - "3000:3000"
+      - "5173:5173"
+    environment:
+      VITE_API_URL: https://api:5000
     volumes:
       - logs:/client/logs
       - ./client:/client
       - /client/node_modules
     stdin_open: true
-    tty: true
+    # tty: true
     depends_on:
       - api
-    networks:
-      - yt-sharing
+    # networks:
+    #   - yt-sharing
 
   api:
-    build: ./back-end
+    build:
+      context: ./back-end
     ports:
       - "5000:5000"
     environment:
       MONGO_URL: mongodb://mongodb:27017
       DB_NAME: yt-sharing
-    working_dir: /back-end
+      NAME: HienPhan
+      JWT_SECRET: secret
     volumes:
       - logs:/back-end/logs
       - ./api:/api
       - /api/node_modules
-    env_file:
-      - ./back-end/.env
     depends_on: 
       - mongodb
-    networks:
-      - yt-sharing
+    # networks:
+    #   - yt-sharing
 
-networks:
-  yt-sharing:
-    driver: bridge
+# networks:
+#   yt-sharing:
+#     driver: bridge
 
 volumes:
   data:

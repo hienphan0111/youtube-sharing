@@ -34,7 +34,7 @@
 
 <!-- PROJECT DESCRIPTION -->
 
-# 📖 Mentor app <a name="about-project"></a>
+# 📖 Youtube sharing app <a name="about-project"></a>
 
 This App allow users share their favorite youtube video.
 
